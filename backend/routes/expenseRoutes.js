@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Expense = require('../models/Expense');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Define budget limits for each category
 const budgetLimits = {
@@ -73,6 +74,10 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
+
+router.get("/protected", authMiddleware, (req, res) => {
+  res.json({ message: "You are authenticated", user: req.user });
 });
 
 module.exports = router;

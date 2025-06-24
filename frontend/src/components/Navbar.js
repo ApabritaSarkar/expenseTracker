@@ -1,26 +1,78 @@
-import React from 'react';
-import { FaRocket, FaSignOutAlt } from 'react-icons/fa';
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { LayoutDashboard, LogIn, LogOut, UserPlus } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  return (
-    <nav className="bg-indigo-600 text-white shadow-md">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xl font-semibold">
-          <FaRocket className="text-white" />
-          <span>Student Budget Pro</span>
-        </div>
+  const { user, logout } = useAuth();
 
-        <div className="flex items-center gap-4">
-          <span className="hidden sm:block">Hi, --Name--!</span>
-          <button
-            className="p-2 rounded-full border border-white hover:bg-white hover:text-indigo-600 transition"
-            title="Logout"
-          >
-            <FaSignOutAlt />
-          </button>
-        </div>
+  return (
+    <motion.nav
+      initial={{ y: -40, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-slate-800 text-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-50"
+    >
+      {/* Brand */}
+      <div className="flex items-center space-x-3">
+        <LayoutDashboard className="w-6 h-6 text-indigo-400" />
+        <span className="text-xl font-semibold tracking-wide">
+          ExpenseWise
+        </span>
       </div>
-    </nav>
+
+      {/* Nav Links */}
+      <div className="flex items-center gap-6 text-sm font-medium">
+        <motion.div whileHover={{ scale: 1.1 }}>
+          <Link
+            to="/"
+            className="flex items-center gap-1 hover:text-indigo-300 transition-colors"
+          >
+            <LayoutDashboard className="w-4 h-4" />
+            Dashboard
+          </Link>
+        </motion.div>
+
+        {user ? (
+          <>
+            <span className="text-indigo-300 hidden sm:block">
+              Hi, {user.username}
+            </span>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              onClick={logout}
+              className="flex items-center gap-1 hover:text-red-400 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </motion.button>
+          </>
+        ) : (
+          <>
+            <motion.div whileHover={{ scale: 1.1 }}>
+              <Link
+                to="/login"
+                className="flex items-center gap-1 hover:text-indigo-300 transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                Login
+              </Link>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.1 }}>
+              <Link
+                to="/register"
+                className="flex items-center gap-1 hover:text-indigo-300 transition-colors"
+              >
+                <UserPlus className="w-4 h-4" />
+                Register
+              </Link>
+            </motion.div>
+          </>
+        )}
+      </div>
+    </motion.nav>
   );
 };
 

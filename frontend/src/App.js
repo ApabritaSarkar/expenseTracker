@@ -1,33 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from './components/Navbar';
-import AddExpenseForm from './components/AddExpenseForm';
-import BudgetProgress from './components/BudgetProgress';
-import AIAdvisor from './components/AIAdvisor';
-import Charts from './components/Charts';
-import DownloadButtons from './components/DownloadButtons';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Navbar from "./components/Navbar";
+import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import { Toaster } from "react-hot-toast";
 
-function App() {
-  const [expenseRefresh, setExpenseRefresh] = useState(false);
+// 🔐 Route protection
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAuth();
+  return user ? children : <Navigate to="/login" />;
+};
 
+const App = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10">
-<AddExpenseForm onExpenseAdded={() => setExpenseRefresh(prev => !prev)} />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-<BudgetProgress refresh={expenseRefresh} />
-          <AIAdvisor />
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white">
+          <Navbar />
+          <Toaster position="top-right" />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
         </div>
-
-<Charts refresh={expenseRefresh} />
-
-        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-          <DownloadButtons />
-        </div>
-      </main>
-    </div>
+      </Router>
+    </AuthProvider>
   );
-}
+};
 
 export default App;

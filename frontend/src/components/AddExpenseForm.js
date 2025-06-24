@@ -1,82 +1,131 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { IndianRupee, Calendar, Tag } from "lucide-react";
+import axios from "axios";
+import VoiceInput from "./VoiceInput";
 
-const AddExpenseForm = ({ onExpenseAdded }) => {
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('Food');
-  const [date, setDate] = useState('');
+const categoryOptions = [
+  "Food",
+  "Transport",
+  "Books",
+  "Entertainment",
+  "Others",
+];
+
+const AddExpenseForm = ({ onAddExpense }) => {
+  const [formData, setFormData] = useState({
+    amount: "",
+    category: "",
+    date: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const expenseData = { amount: parseFloat(amount), category, date };
+    if (!formData.amount || !formData.category || !formData.date) {
+      alert("Please fill all fields.");
+      return;
+    }
 
     try {
-      const response = await fetch('http://localhost:5000/api/expenses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(expenseData),
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to save');
-
-      alert('Expense added successfully!');
-      setAmount('');
-      setCategory('Food');
-      setDate('');
-            onExpenseAdded();  // 🔁 trigger refresh
-
-      // Optionally call parent function to refetch data
-    } catch (error) {
-      alert(error.message);
+      const res = await axios.post(
+        "http://localhost:5000/api/expenses",
+        formData
+      );
+      onAddExpense && onAddExpense(res.data);
+      setFormData({ amount: "", category: "", date: "" });
+    } catch (err) {
+      console.error("Error adding expense:", err);
+      alert("Something went wrong. Try again.");
     }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6">
-      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-        ➕ Add New Expense
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 max-w-xl mx-auto mt-6"
+    >
+      <h2 className="text-xl font-semibold mb-4 text-slate-700 dark:text-white">
+        Add New Expense
       </h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Amount */}
+        <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm">
+          <IndianRupee className="w-5 h-5 text-slate-500 mr-2" />
+          <input
+            type="number"
+            name="amount"
+            placeholder="Amount"
+            value={formData.amount}
+            onChange={handleChange}
+            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400"
+          />
+        </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <input
-          type="number"
-          step="0.01"
-          placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-          className="form-input"
+        {/* Category Dropdown */}
+        <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm bg-slate-100 dark:bg-slate-800">
+          <Tag className="w-5 h-5 text-slate-500 mr-2" />
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400"
+          >
+            <option
+              value=""
+              disabled
+              className="text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800"
+            >
+              Select category
+            </option>
+            {categoryOptions.map((cat) => (
+              <option
+                key={cat}
+                value={cat}
+                className="text-slate-800 dark:text-white bg-white dark:bg-slate-800"
+              >
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <VoiceInput
+          onVoiceResult={(parsed) =>
+            setFormData((prev) => ({
+              ...prev,
+              ...parsed,
+            }))
+          }
         />
 
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="form-select"
-        >
-          <option value="Food">🍔 Food</option>
-          <option value="Transport">🚌 Transport</option>
-          <option value="Books">📚 Books</option>
-          <option value="Entertainment">🎮 Entertainment</option>
-          <option value="Others">💼 Others</option>
-        </select>
+        {/* Date */}
+        <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm">
+          <Calendar className="w-5 h-5 text-slate-500 mr-2" />
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400"
+          />
+        </div>
 
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-          className="form-input"
-        />
-
-        <button
+        <motion.button
+          whileTap={{ scale: 0.95 }}
           type="submit"
-          className="md:col-span-3 bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition w-full"
+          className="w-full mt-4 bg-indigo-600 text-white font-medium py-2 rounded-lg shadow hover:bg-indigo-700 transition"
         >
-          💾 Add Expense
-        </button>
+          Add Expense
+        </motion.button>
       </form>
-    </div>
+    </motion.div>
   );
 };
 
