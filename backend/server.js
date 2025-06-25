@@ -8,7 +8,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "http://localhost:3000", // frontend origin
+origin: [
+  "http://localhost:3000",
+  "https://expense-tracker-eight-mu-99.vercel.app/" // <-- add your actual deployed frontend URL
+],
   credentials: true, // allow cookies
 }));
 app.use(express.json());
