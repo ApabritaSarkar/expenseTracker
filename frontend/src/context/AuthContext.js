@@ -10,30 +10,33 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/expenses/protected", {
+      .get(`${process.env.REACT_APP_API_URL}/api/expenses/protected`, {
         withCredentials: true,
       })
       .then((res) => setUser(res.data.user))
       .catch(() => setUser(null))
-      .finally(() => setLoading(false)); 
+      .finally(() => setLoading(false));
   }, []);
 
   const login = async (username, password) => {
     await axios.post(
-      "http://localhost:5000/api/auth/login",
+      `${process.env.REACT_APP_API_URL}/api/auth/login`,
       { username, password },
       { withCredentials: true }
     );
-    const res = await axios.get("http://localhost:5000/api/expenses/protected", {
-      withCredentials: true,
-    });
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/expenses/protected`,
+      {
+        withCredentials: true,
+      }
+    );
     setUser(res.data.user);
     toast.success("Login successful!");
   };
 
   const logout = async () => {
     await axios.post(
-      "http://localhost:5000/api/auth/logout",
+      `${process.env.REACT_APP_API_URL}/api/auth/logout`,
       {},
       { withCredentials: true }
     );

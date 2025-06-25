@@ -18,7 +18,7 @@ const Register = () => {
     setMessage("");
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register", form);
+      axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, form);
       setMessage("✅ User registered! Redirecting to login...");
       setForm({ username: "", password: "" });
 
@@ -58,9 +58,7 @@ const Register = () => {
         {message && (
           <p
             className={`text-sm ${
-              message.startsWith("✅")
-                ? "text-green-500"
-                : "text-red-500"
+              message.startsWith("✅") ? "text-green-500" : "text-red-500"
             }`}
           >
             {message}

@@ -4,7 +4,8 @@ import { FileDown, FileSpreadsheet, FileBarChart } from "lucide-react";
 
 const DownloadButtons = () => {
   const handleDownload = async (type) => {
-    const endpoint = `http://localhost:5000/api/export/${type}`;
+    const endpoint = `${process.env.REACT_APP_API_URL}/api/export/${type}`
+;
     try {
       const response = await fetch(endpoint, {
         method: "GET",
