@@ -10,7 +10,7 @@ const app = express();
 app.use(cors({
 origin: [
   "http://localhost:3000",
-  "https://expense-tracker-eight-mu-99.vercel.app/" // <-- add your actual deployed frontend URL
+  "https://expense-tracker-eight-mu-99.vercel.app/"
 ],
   credentials: true, // allow cookies
 }));
