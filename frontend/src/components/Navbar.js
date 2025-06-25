@@ -5,7 +5,7 @@ import { LayoutDashboard, LogIn, LogOut, UserPlus } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
 
   return (
     <motion.nav
@@ -34,20 +34,15 @@ const Navbar = () => {
           </Link>
         </motion.div>
 
-        {user ? (
-          <>
-            <span className="text-indigo-300 hidden sm:block">
-              Hi, {user.username}
-            </span>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              onClick={logout}
-              className="flex items-center gap-1 hover:text-red-400 transition-colors"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </motion.button>
-          </>
+        {!loading && user ? (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            onClick={logout}
+            className="flex items-center gap-1 hover:text-red-400 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </motion.button>
         ) : (
           <>
             <motion.div whileHover={{ scale: 1.1 }}>

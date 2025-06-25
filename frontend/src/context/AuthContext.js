@@ -6,15 +6,16 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅
 
-  // Auto-fetch user on mount (optional if using session check)
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/expenses/protected", {
         withCredentials: true,
       })
       .then((res) => setUser(res.data.user))
-      .catch(() => setUser(null));
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false)); 
   }, []);
 
   const login = async (username, password) => {
@@ -23,7 +24,10 @@ export const AuthProvider = ({ children }) => {
       { username, password },
       { withCredentials: true }
     );
-    setUser({ username });
+    const res = await axios.get("http://localhost:5000/api/expenses/protected", {
+      withCredentials: true,
+    });
+    setUser(res.data.user);
     toast.success("Login successful!");
   };
 
@@ -37,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     toast("Logged out", { icon: "👋" });
   };
 
-  const value = { user, login, logout };
+  const value = { user, login, logout, loading };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

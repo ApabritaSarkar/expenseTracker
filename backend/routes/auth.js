@@ -2,9 +2,10 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+require("dotenv").config();
 
 const router = express.Router();
-const JWT_SECRET = "your_jwt_secret"; // move to .env in real apps
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // 🔐 Register
 router.post("/register", async (req, res) => {

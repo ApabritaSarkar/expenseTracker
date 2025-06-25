@@ -13,19 +13,17 @@ const budgetLimits = {
 };
 
 // 1. Add a new expense with budget validation
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
     try {
         const { amount, category, date } = req.body;
         const expenseAmount = parseFloat(amount);
 
-        // Validate category
         if (!budgetLimits.hasOwnProperty(category)) {
             return res.status(400).json({ error: "Invalid category" });
         }
 
-        // Get total spent in this category
         const totalSpent = await Expense.aggregate([
-            { $match: { category } },
+            { $match: { category, user: req.user.id } },
             { $group: { _id: null, total: { $sum: "$amount" } } }
         ]);
 
@@ -36,8 +34,7 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: `You have spent all the money assigned for ${category}.` });
         }
 
-        // Save the expense
-        const newExpense = new Expense({ amount: expenseAmount, category, date });
+        const newExpense = new Expense({ user: req.user.id, amount: expenseAmount, category, date });
         await newExpense.save();
 
         res.status(201).json({ message: "Expense added successfully", expense: newExpense });
@@ -47,9 +44,9 @@ router.post('/', async (req, res) => {
 });
 
 // 2. Get all expenses
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
     try {
-        const expenses = await Expense.find();
+        const expenses = await Expense.find({ user: req.user.id }).sort({ date: -1 });
         res.status(200).json(expenses);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -57,9 +54,9 @@ router.get('/', async (req, res) => {
 });
 
 // 3. Get expenses by category
-router.get('/category/:category', async (req, res) => {
+router.get('/category/:category', authMiddleware, async (req, res) => {
     try {
-        const expenses = await Expense.find({ category: req.params.category });
+        const expenses = await Expense.find({ category: req.params.category, user: req.user.id });
         res.status(200).json(expenses);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -67,17 +64,19 @@ router.get('/category/:category', async (req, res) => {
 });
 
 // 4. Delete an expense
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
     try {
-        await Expense.findByIdAndDelete(req.params.id);
+        const expense = await Expense.findOneAndDelete({ _id: req.params.id, user: req.user.id });
+        if (!expense) return res.status(404).json({ message: "Expense not found or unauthorized" });
         res.status(200).json({ message: "Expense deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
+// 5. Test protected route
 router.get("/protected", authMiddleware, (req, res) => {
-  res.json({ message: "You are authenticated", user: req.user });
+    res.json({ message: "You are authenticated", user: req.user });
 });
 
 module.exports = router;

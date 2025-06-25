@@ -34,9 +34,10 @@ const AddExpenseForm = ({ onAddExpense }) => {
     try {
       const res = await axios.post(
         "http://localhost:5000/api/expenses",
-        formData
+        formData,
+        { withCredentials: true }
       );
-      onAddExpense && onAddExpense(res.data);
+      onAddExpense && onAddExpense(res.data.expense);
       setFormData({ amount: "", category: "", date: "" });
     } catch (err) {
       console.error("Error adding expense:", err);
