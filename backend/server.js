@@ -7,23 +7,26 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // Middleware
-app.use(cors({
-origin: [
-  "http://localhost:3000",
-  "https://expense-tracker-eight-mu-99.vercel.app/"
-],
-  credentials: true, // allow cookies
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://expense-tracker-eight-mu-99.vercel.app",
+    ],
+    credentials: true, // allow cookies
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.log("❌ DB Connection Error:", err));
+  .catch((err) => console.log("❌ DB Connection Error:", err));
 
 // Routes
 const expenseRoutes = require("./routes/expenseRoutes");
