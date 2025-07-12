@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // ✅
 
   useEffect(() => {
-    (async () => {
+    const fetchUser = async () => {
       try {
         const res = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/expenses/protected`,
@@ -24,7 +24,9 @@ export const AuthProvider = ({ children }) => {
       } finally {
         setLoading(false);
       }
-    })();
+    };
+
+    fetchUser();
   }, []);
 
   const login = async (username, password) => {
