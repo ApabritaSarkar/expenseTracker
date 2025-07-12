@@ -16,7 +16,10 @@ export const AuthProvider = ({ children }) => {
           { withCredentials: true }
         );
         setUser(res.data.user);
-      } catch {
+      } catch (err) {
+        if (err.response?.status !== 401) {
+          console.error("Auth check failed:", err);
+        }
         setUser(null);
       } finally {
         setLoading(false);
