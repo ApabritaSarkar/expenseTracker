@@ -38,8 +38,8 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "2h" });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // change to true in prod with HTTPS
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
 
     res.json({ message: "Logged in" });

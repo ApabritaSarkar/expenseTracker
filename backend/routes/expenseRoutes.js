@@ -75,8 +75,13 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 });
 
 // 5. Test protected route
-router.get("/protected", authMiddleware, (req, res) => {
-    res.json({ message: "You are authenticated", user: req.user });
+router.get("/protected", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json({ user }); // <-- THIS IS CRUCIAL
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 module.exports = router;

@@ -19,6 +19,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, {
