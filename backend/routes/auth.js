@@ -28,12 +28,25 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
+  console.log("Login attempt for username:", username); // Log the incoming username
+  console.log("Password provided (plain-text):", password); // Log the plain-text password (BE CAREFUL IN PRODUCTION)
+
   try {
     const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) {
+      console.log("User not found for username:", username); // Log if user not found
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    console.log("User found:", user.username); // Log the found username
+    console.log("Stored hashed password:", user.password); // Log the stored hash
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Wrong password" });
+    console.log("bcrypt.compare result (isMatch):", isMatch); // Log the result of the comparison
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Wrong password" });
+    }
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "2h" });
     res.cookie("token", token, {
@@ -44,6 +57,7 @@ router.post("/login", async (req, res) => {
 
     res.json({ message: "Logged in" });
   } catch (err) {
+    console.error("Login route error:", err); // Log any unexpected errors
     res.status(500).json({ message: "Login failed" });
   }
 });
