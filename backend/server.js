@@ -6,17 +6,38 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-// Middleware
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://expense-tracker-eight-mu-99.vercel.app", // Your main Vercel domain
+];
+
+// Add logic to dynamically allow all Vercel preview URLs for your project
+function isAllowed(origin) {
+  // If the origin is in our static allowed list
+  if (allowedOrigins.indexOf(origin) !== -1) {
+    return true;
+  }
+
+  // If the origin is a Vercel preview URL for your project
+  if (origin && origin.includes("apabrita-sarkars-projects.vercel.app")) {
+    return true;
+  }
+
+  // If the origin is not set (e.g., direct API calls from same origin)
+  if (!origin) {
+    return true;
+  }
+
+  return false;
+}
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://expense-tracker-eight-mu-99.vercel.app",
-      "https://expense-tracker-fpfdr7vke-apabrita-sarkars-projects.vercel.app",
-    ],
-    credentials: true, // allow cookies
+    origin: isAllowed,
+    credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
