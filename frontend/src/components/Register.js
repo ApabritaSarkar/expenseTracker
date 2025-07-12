@@ -18,15 +18,24 @@ const Register = () => {
     setMessage("");
 
     try {
-      axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, form);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/auth/register`,
+        form,
+        { withCredentials: true } // important if backend uses cookies
+      );
+
       setMessage("✅ User registered! Redirecting to login...");
       setForm({ username: "", password: "" });
 
       setTimeout(() => {
         navigate("/login");
       }, 1500);
-    } catch {
-      setMessage("❌ Username may already exist.");
+    } catch (error) {
+      console.error(
+        "Registration failed:",
+        error?.response?.data || error.message
+      );
+      setMessage("❌ Registration failed.");
     } finally {
       setLoading(false);
     }

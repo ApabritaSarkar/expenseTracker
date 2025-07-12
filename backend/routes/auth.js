@@ -16,13 +16,18 @@ router.post("/register", async (req, res) => {
     if (existing) return res.status(400).json({ message: "Username exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("Creating user with:", { username, password: hashedPassword });
+
     const user = await User.create({ username, password: hashedPassword });
 
+    console.log("✅ User created:", user);
     res.status(201).json({ message: "User registered" });
   } catch (err) {
+    console.error("❌ Registration error:", err); // 👈 This will show if save failed
     res.status(500).json({ message: "Registration failed" });
   }
 });
+
 
 // 🔓 Login
 router.post("/login", async (req, res) => {

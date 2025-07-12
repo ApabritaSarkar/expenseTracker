@@ -9,29 +9,40 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // ✅
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/api/expenses/protected`, {
-        withCredentials: true,
-      })
-      .then((res) => setUser(res.data.user))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/expenses/protected`,
+          { withCredentials: true }
+        );
+        setUser(res.data.user);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const login = async (username, password) => {
-    await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/auth/login`,
-      { username, password },
-      { withCredentials: true }
-    );
-    const res = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/expenses/protected`,
-      {
-        withCredentials: true,
-      }
-    );
-    setUser(res.data.user);
-    toast.success("Login successful!");
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/auth/login`,
+        { username, password },
+        { withCredentials: true }
+      );
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/expenses/protected`,
+        { withCredentials: true }
+      );
+      setUser(res.data.user);
+      toast.success("Login successful!");
+    } catch (err) {
+      toast.error("❌ Login failed. Check credentials.");
+      throw err; // let the component handle UI redirect or error
+    }
   };
 
   const logout = async () => {
