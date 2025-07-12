@@ -12,6 +12,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://expense-tracker-eight-mu-99.vercel.app",
+      "https://expense-tracker-fpfdr7vke-apabrita-sarkars-projects.vercel.app",
     ],
     credentials: true, // allow cookies
   })
