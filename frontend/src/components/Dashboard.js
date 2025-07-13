@@ -9,13 +9,18 @@ import { motion } from "framer-motion";
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState([]);
-
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/expenses`, {
-          withCredentials: true,
-        });
+        const token = localStorage.getItem("token");
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/expenses`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setExpenses(res.data);
       } catch (err) {
         console.error("Failed to fetch expenses", err);
@@ -30,7 +35,7 @@ const Dashboard = () => {
   };
 
   return (
-    <motion.main 
+    <motion.main
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -42,7 +47,6 @@ const Dashboard = () => {
 
       {/* Top Section: Form, Budget, and Insights */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        
         {/* Expense Form (Full width on mobile, 1/3 on desktop) */}
         <div className="lg:col-span-1">
           <AddExpenseForm onAddExpense={handleAddExpense} />

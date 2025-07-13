@@ -33,16 +33,22 @@ const AddExpenseForm = ({ onAddExpense }) => {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.post(
-`${process.env.REACT_APP_API_URL}/api/expenses`,
+        `${process.env.REACT_APP_API_URL}/api/expenses`,
         formData,
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       onAddExpense && onAddExpense(res.data.expense);
       setFormData({ amount: "", category: "", date: "" });
     } catch (err) {
       console.error("Error adding expense:", err);
-      alert("Something went wrong. Try again.");
+      alert(err.response?.data?.error || "Something went wrong. Try again.");
     }
   };
 
@@ -58,7 +64,6 @@ const AddExpenseForm = ({ onAddExpense }) => {
         Add New Expense
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
-        
         {/* Amount Input */}
         <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-200">
           <IndianRupee className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-4" />
