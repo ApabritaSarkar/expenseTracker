@@ -6,20 +6,29 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅
+  const [loading, setLoading] = useState(true);
 
+  // 🔄 Fetch user from protected route
   useEffect(() => {
     const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/expenses/protected`,
-          { withCredentials: true }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         setUser(res.data.user);
       } catch (err) {
-        if (err.response?.status !== 401) {
-          console.error("Auth check failed:", err);
-        }
+        console.error("Auth check failed:", err);
         setUser(null);
       } finally {
         setLoading(false);
@@ -29,31 +38,26 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  // 🔐 Login + save token
   const login = async (username, password) => {
     try {
-      await axios.post(
+      const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/auth/login`,
-        { username, password },
-        { withCredentials: true }
+        { username, password }
       );
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/expenses/protected`,
-        { withCredentials: true }
-      );
+
+      localStorage.setItem("token", res.data.token);
       setUser(res.data.user);
       toast.success("Login successful!");
     } catch (err) {
       toast.error("❌ Login failed. Check credentials.");
-      throw err; // let the component handle UI redirect or error
+      throw err;
     }
   };
 
-  const logout = async () => {
-    await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/auth/logout`,
-      {},
-      { withCredentials: true }
-    );
+  // 🚪 Logout
+  const logout = () => {
+    localStorage.removeItem("token");
     setUser(null);
     toast("Logged out", { icon: "👋" });
   };

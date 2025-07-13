@@ -32,39 +32,43 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  console.log("Login attempt for username:", username); // Log the incoming username
-  console.log("Password provided (plain-text):", password); // Log the plain-text password (BE CAREFUL IN PRODUCTION)
+  console.log("Login attempt for username:", username);
+  console.log("Password provided (plain-text):", password);
 
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      console.log("User not found for username:", username); // Log if user not found
+      console.log("User not found for username:", username);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    console.log("User found:", user.username); // Log the found username
-    console.log("Stored hashed password:", user.password); // Log the stored hash
+    console.log("User found:", user.username);
+    console.log("Stored hashed password:", user.password);
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("bcrypt.compare result (isMatch):", isMatch); // Log the result of the comparison
+    console.log("bcrypt.compare result (isMatch):", isMatch);
 
     if (!isMatch) {
       return res.status(400).json({ message: "Wrong password" });
     }
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "2h" });
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-    });
 
-    res.json({ message: "Logged in" });
+    // ✅ Send token + user info in response (no cookies)
+    res.json({
+      message: "Logged in",
+      token,
+      user: {
+        id: user._id,
+        username: user.username
+      }
+    });
   } catch (err) {
-    console.error("Login route error:", err); // Log any unexpected errors
+    console.error("Login route error:", err);
     res.status(500).json({ message: "Login failed" });
   }
 });
+
 
 // 🔒 Logout
 router.post("/logout", (req, res) => {
