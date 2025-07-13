@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
 const app = express();
+app.set("trust proxy", 1);
 
 // 🌐 Allowed CORS Origins
 const allowedOrigins = [
@@ -35,11 +36,6 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
-
-// ✅ Trust proxy in production (for cookies)
-if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1);
-}
 
 // ✅ MongoDB Connection
 mongoose
