@@ -9,6 +9,7 @@ const budgetLimits = {
   Transport: 300,
   Books: 200,
   Entertainment: 400,
+  Medicine: 600,
   Others: 250,
 };
 

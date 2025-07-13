@@ -9,6 +9,7 @@ const categoryOptions = [
   "Transport",
   "Books",
   "Entertainment",
+  "Medicine",
   "Others",
 ];
 
