@@ -51,33 +51,35 @@ const AddExpenseForm = ({ onAddExpense }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 max-w-xl mx-auto mt-6"
+      // Enhanced container styles: refined shadow and background
+      className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 transition-all duration-300"
     >
-      <h2 className="text-xl font-semibold mb-4 text-slate-700 dark:text-white">
+      <h2 className="text-2xl font-bold mb-6 text-slate-800 dark:text-white">
         Add New Expense
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Amount */}
-        <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm">
-          <IndianRupee className="w-5 h-5 text-slate-500 mr-2" />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        
+        {/* Amount Input */}
+        <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-200">
+          <IndianRupee className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-4" />
           <input
             type="number"
             name="amount"
             placeholder="Amount"
             value={formData.amount}
             onChange={handleChange}
-            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400"
+            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400 font-medium text-lg"
           />
         </div>
 
         {/* Category Dropdown */}
-        <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm bg-slate-100 dark:bg-slate-800">
-          <Tag className="w-5 h-5 text-slate-500 mr-2" />
+        <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 shadow-sm bg-slate-100 dark:bg-slate-800">
+          <Tag className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-4" />
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400"
+            className="w-full bg-transparent outline-none text-slate-800 dark:text-white dark:placeholder-slate-400 font-medium"
           >
             <option
               value=""
@@ -98,6 +100,7 @@ const AddExpenseForm = ({ onAddExpense }) => {
           </select>
         </div>
 
+        {/* Voice Input Integration */}
         <VoiceInput
           onVoiceResult={(parsed) =>
             setFormData((prev) => ({
@@ -107,22 +110,23 @@ const AddExpenseForm = ({ onAddExpense }) => {
           }
         />
 
-        {/* Date */}
-        <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm">
-          <Calendar className="w-5 h-5 text-slate-500 mr-2" />
+        {/* Date Input */}
+        <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-200">
+          <Calendar className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-4" />
           <input
             type="date"
             name="date"
             value={formData.date}
             onChange={handleChange}
-            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400"
+            className="w-full bg-transparent outline-none text-slate-800 dark:text-white placeholder-slate-400 font-medium"
           />
         </div>
 
+        {/* Submit Button */}
         <motion.button
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.97 }}
           type="submit"
-          className="w-full mt-4 bg-indigo-600 text-white font-medium py-2 rounded-lg shadow hover:bg-indigo-700 transition"
+          className="w-full mt-6 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105"
         >
           Add Expense
         </motion.button>

@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LayoutDashboard, LogIn, LogOut, UserPlus } from "lucide-react";
+// Updated imports: Replacing LayoutDashboard with IndianRupee for the logo
+import { IndianRupee, LogIn, LogOut, UserPlus, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
@@ -14,19 +15,20 @@ const Navbar = () => {
       transition={{ duration: 0.5 }}
       className="bg-slate-800 text-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-50"
     >
-      {/* Brand */}
-      <div className="flex items-center space-x-3">
-        <LayoutDashboard className="w-6 h-6 text-indigo-400" />
+      {/* Brand: Linked to the Landing Page (/) and using the IndianRupee logo */}
+      <Link to="/" className="flex items-center space-x-3 cursor-pointer">
+        <IndianRupee className="w-6 h-6 text-indigo-400" />
         <span className="text-xl font-semibold tracking-wide">
           ExpenseWise
         </span>
-      </div>
+      </Link>
 
       {/* Nav Links */}
       <div className="flex items-center gap-6 text-sm font-medium">
+        {/* Dashboard Link (remains /dashboard) */}
         <motion.div whileHover={{ scale: 1.1 }}>
           <Link
-            to="/"
+            to="/dashboard"
             className="flex items-center gap-1 hover:text-indigo-300 transition-colors"
           >
             <LayoutDashboard className="w-4 h-4" />
@@ -35,6 +37,7 @@ const Navbar = () => {
         </motion.div>
 
         {!loading && user ? (
+          // Logged in state: Logout button
           <motion.button
             whileHover={{ scale: 1.1 }}
             onClick={logout}
@@ -44,6 +47,7 @@ const Navbar = () => {
             Logout
           </motion.button>
         ) : (
+          // Not logged in state: Login and Register links
           <>
             <motion.div whileHover={{ scale: 1.1 }}>
               <Link

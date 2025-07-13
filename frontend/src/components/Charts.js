@@ -19,17 +19,17 @@ const Charts = ({ data = [] }) => {
     }, {})
   );
 
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="grid md:grid-cols-2 gap-6 mt-6 p-4"
+      // Updated container styles for charts section
+      className="grid md:grid-cols-2 gap-10" 
     >
       {/* Pie Chart */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-lg">
-        <h3 className="text-lg font-semibold text-slate-700 dark:text-white mb-4">Expenses by Category</h3>
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-2xl transition-all duration-300">
+        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Expenses by Category</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -49,14 +49,14 @@ const Charts = ({ data = [] }) => {
       </div>
 
       {/* Bar Chart */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-lg">
-        <h3 className="text-lg font-semibold text-slate-700 dark:text-white mb-4">Spending Overview</h3>
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-2xl transition-all duration-300">
+        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Spending Overview</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={categoryData}>
-            <XAxis dataKey="name" />
-            <YAxis />
+          <BarChart data={categoryData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+            <XAxis dataKey="name" stroke="#64748b" />
+            <YAxis stroke="#64748b" />
             <Tooltip />
-            <Bar dataKey="value" fill="#6366F1" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="value" fill="#6366F1" radius={[10, 10, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

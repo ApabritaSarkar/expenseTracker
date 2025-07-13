@@ -4,8 +4,7 @@ import { FileDown, FileSpreadsheet, FileBarChart } from "lucide-react";
 
 const DownloadButtons = () => {
   const handleDownload = async (type) => {
-    const endpoint = `${process.env.REACT_APP_API_URL}/api/export/${type}`
-;
+    const endpoint = `${process.env.REACT_APP_API_URL}/api/export/${type}`;
     try {
       const response = await fetch(endpoint, {
         method: "GET",
@@ -35,30 +34,33 @@ const DownloadButtons = () => {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-white dark:bg-slate-900 rounded-2xl shadow-md p-6 mt-6 max-w-xl mx-auto"
+      // Enhanced container styles: polished shadow and rounding
+      className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 transition-all duration-300"
     >
-      <h2 className="text-lg font-semibold text-slate-700 dark:text-white mb-4 flex items-center gap-2">
-        <FileDown className="w-5 h-5 text-indigo-500" />
+      <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
+        <FileDown className="w-7 h-7 text-indigo-600" />
         Export Your Data
       </h2>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-6">
+        {/* CSV Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => handleDownload("csv")}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow"
+          className="flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg font-semibold transition-all duration-300"
         >
-          <FileSpreadsheet className="w-4 h-4" />
+          <FileSpreadsheet className="w-5 h-5" />
           Download CSV
         </motion.button>
 
+        {/* Excel Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
-          onClick={() => handleDownload("excel")}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg shadow"
+          onClick={() => handleDownload("xlsx")}
+          className="flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl shadow-lg font-semibold transition-all duration-300"
         >
-          <FileBarChart className="w-4 h-4" />
-          Download Excel
+          <FileBarChart className="w-5 h-5" />
+          Download XLSX
         </motion.button>
       </div>
     </motion.div>

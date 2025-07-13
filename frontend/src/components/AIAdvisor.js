@@ -51,18 +51,19 @@ const AIAdvisor = ({ expenses }) => {
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-white dark:bg-slate-900 rounded-2xl shadow-md p-6 mt-6 max-w-xl mx-auto"
+      // Enhanced container styles: polished shadow and rounding
+      className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 transition-all duration-300"
     >
-      <h2 className="text-lg font-semibold text-slate-700 dark:text-white mb-4 flex items-center gap-2">
-        <Brain className="w-5 h-5 text-indigo-500" />
-        Smart Advisor
+      <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
+        AI Insights
       </h2>
-
-      <ul className="space-y-3 text-slate-700 dark:text-slate-300 text-sm">
+      <ul className="space-y-4">
         {insights.map((insight, index) => (
-          <li key={index} className="flex items-start gap-2">
-            {insight.icon}
-            <span>{insight.text}</span>
+          <li key={index} className="flex items-start gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm">
+            <span className="flex-shrink-0 mt-1">{insight.icon}</span>
+            <p className="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+              {insight.text}
+            </p>
           </li>
         ))}
       </ul>
